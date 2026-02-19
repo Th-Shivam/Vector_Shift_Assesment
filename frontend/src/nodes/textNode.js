@@ -35,7 +35,7 @@
 // }
 
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BaseNode from "./BaseNode";
 
 export const TextNode = ({ id, data }) => {
@@ -43,26 +43,41 @@ export const TextNode = ({ id, data }) => {
     data?.text || "{{input}}"
   );
 
+  const [variables, setVariables] = useState([]);
+
   const handleTextChange = (e) => {
     setCurrText(e.target.value);
   };
+
+  // 🔥 Extract variables dynamically
+  useEffect(() => {
+    const regex = /{{\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*}}/g;
+    const matches = [...currText.matchAll(regex)];
+
+    const uniqueVars = [
+      ...new Set(matches.map(match => match[1]))
+    ];
+
+    setVariables(uniqueVars);
+  }, [currText]);
 
   return (
     <BaseNode
       id={id}
       title="Text"
-      inputs={[]}   // later dynamic variables yaha aayenge
+      inputs={variables.map(v => ({ id: v }))}
       outputs={[{ id: "output" }]}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label>
-          Text:
-          <input
-            type="text"
-            value={currText}
-            onChange={handleTextChange}
-          />
-        </label>
+        <textarea
+          value={currText}
+          onChange={handleTextChange}
+          style={{
+            width: "100%",
+            minHeight: "60px",
+            resize: "none",
+          }}
+        />
       </div>
     </BaseNode>
   );
