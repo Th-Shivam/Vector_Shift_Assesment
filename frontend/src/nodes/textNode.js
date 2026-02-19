@@ -35,7 +35,7 @@
 // }
 
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import BaseNode from "./BaseNode";
 
 export const TextNode = ({ id, data }) => {
@@ -44,6 +44,8 @@ export const TextNode = ({ id, data }) => {
   );
 
   const [variables, setVariables] = useState([]);
+
+  const textareaRef = useRef(null);
 
   const handleTextChange = (e) => {
     setCurrText(e.target.value);
@@ -61,6 +63,15 @@ export const TextNode = ({ id, data }) => {
     setVariables(uniqueVars);
   }, [currText]);
 
+  // 🔥 Auto resize logic
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
+    }
+  }, [currText]);
+
   return (
     <BaseNode
       id={id}
@@ -68,17 +79,17 @@ export const TextNode = ({ id, data }) => {
       inputs={variables.map(v => ({ id: v }))}
       outputs={[{ id: "output" }]}
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <textarea
-          value={currText}
-          onChange={handleTextChange}
-          style={{
-            width: "100%",
-            minHeight: "60px",
-            resize: "none",
-          }}
-        />
-      </div>
+      <textarea
+        ref={textareaRef}
+        value={currText}
+        onChange={handleTextChange}
+        style={{
+          width: "100%",
+          minHeight: "60px",
+          resize: "none",
+          overflow: "hidden",
+        }}
+      />
     </BaseNode>
   );
 };
