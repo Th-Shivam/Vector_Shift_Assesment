@@ -79,17 +79,15 @@ export const TextNode = ({ id, data }) => {
       inputs={variables.map(v => ({ id: v }))}
       outputs={[{ id: "output" }]}
     >
-      <textarea
-        ref={textareaRef}
-        value={currText}
-        onChange={handleTextChange}
-        style={{
-          width: "100%",
-          minHeight: "60px",
-          resize: "none",
-          overflow: "hidden",
-        }}
-      />
+      <div className="flex flex-col gap-2">
+        <label className="node-label">Content</label>
+        <textarea
+          ref={textareaRef}
+          value={currText}
+          onChange={handleTextChange}
+          className="node-input resize-none overflow-hidden min-h-[60px]"
+        />
+      </div>
     </BaseNode>
   );
 };

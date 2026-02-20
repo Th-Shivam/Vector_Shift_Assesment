@@ -74,23 +74,28 @@ export const InputNode = ({ id, data }) => {
       inputs={[]} 
       outputs={[{ id: "value" }]}
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label>
-          Name:
+      <div className="flex flex-col gap-4">
+        <div>
+          <label className="node-label">Name</label>
           <input
             type="text"
             value={currName}
             onChange={handleNameChange}
+            className="node-input"
           />
-        </label>
+        </div>
 
-        <label>
-          Type:
-          <select value={inputType} onChange={handleTypeChange}>
+        <div>
+          <label className="node-label">Type</label>
+          <select 
+            value={inputType} 
+            onChange={handleTypeChange}
+            className="node-input appearance-none cursor-pointer"
+          >
             <option value="Text">Text</option>
             <option value="File">File</option>
           </select>
-        </label>
+        </div>
       </div>
     </BaseNode>
   );

@@ -11,14 +11,17 @@ export const MemoryNode = ({ id }) => {
       inputs={[{ id: "message" }]}
       outputs={[{ id: "context" }]}
     >
-      <select
-        value={memoryType}
-        onChange={(e) => setMemoryType(e.target.value)}
-        style={{ width: "100%" }}
-      >
-        <option value="ShortTerm">Short Term</option>
-        <option value="LongTerm">Long Term</option>
-      </select>
+      <div className="flex flex-col gap-2">
+        <label className="node-label">Type</label>
+        <select
+          value={memoryType}
+          onChange={(e) => setMemoryType(e.target.value)}
+          className="node-input appearance-none cursor-pointer"
+        >
+          <option value="ShortTerm">Short Term</option>
+          <option value="LongTerm">Long Term</option>
+        </select>
+      </div>
     </BaseNode>
   );
 };

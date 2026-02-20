@@ -49,8 +49,12 @@ export const LLMNode = ({ id, data }) => {
         { id: "response" }
       ]}
     >
-      <div style={{ textAlign: "center" }}>
-        <span>This is a LLM.</span>
+      <div className="flex flex-col items-center justify-center py-4">
+        <div className="w-12 h-12 rounded-full bg-gray-800/50 border border-white/10 flex items-center justify-center mb-3 shadow-[0_0_20px_rgba(139,92,246,0.3)] relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
+          <span className="text-xl relative z-10">🧠</span>
+        </div>
+        <span className="text-sm text-gray-400 font-medium tracking-wide">Language Model</span>
       </div>
     </BaseNode>
   );

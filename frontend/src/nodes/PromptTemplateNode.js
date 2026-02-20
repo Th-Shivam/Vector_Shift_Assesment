@@ -16,11 +16,14 @@ export const PromptTemplateNode = ({ id }) => {
         { id: "compiled_prompt" }
       ]}
     >
-      <textarea
-        value={template}
-        onChange={(e) => setTemplate(e.target.value)}
-        style={{ width: "100%", minHeight: "60px" }}
-      />
+      <div className="flex flex-col gap-2">
+        <label className="node-label">Template</label>
+        <textarea
+          value={template}
+          onChange={(e) => setTemplate(e.target.value)}
+          className="node-input resize-none min-h-[60px]"
+        />
+      </div>
     </BaseNode>
   );
 };

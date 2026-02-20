@@ -14,13 +14,16 @@ export const ConditionNode = ({ id }) => {
         { id: "false" }
       ]}
     >
-      <input
-        type="text"
-        value={condition}
-        onChange={(e) => setCondition(e.target.value)}
-        placeholder="Enter condition"
-        style={{ width: "100%" }}
-      />
+      <div className="flex flex-col gap-2">
+        <label className="node-label">Expression</label>
+        <input
+          type="text"
+          value={condition}
+          onChange={(e) => setCondition(e.target.value)}
+          placeholder="Enter condition"
+          className="node-input"
+        />
+      </div>
     </BaseNode>
   );
 };
