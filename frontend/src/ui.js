@@ -156,6 +156,8 @@ const selector = (state) => ({
   edges: state.edges,
   getNodeID: state.getNodeID,
   addNode: state.addNode,
+  deleteNode: state.deleteNode,
+  duplicateNode: state.duplicateNode,
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
@@ -164,11 +166,15 @@ const selector = (state) => ({
 export const PipelineUI = () => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [menu, setMenu] = useState(null);
+
   const {
     nodes,
     edges,
     getNodeID,
     addNode,
+    deleteNode,
+    duplicateNode,
     onNodesChange,
     onEdgesChange,
     onConnect,
@@ -218,6 +224,28 @@ export const PipelineUI = () => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
+
+  const onNodeContextMenu = useCallback(
+    (event, node) => {
+      event.preventDefault();
+      const pane = reactFlowWrapper.current.getBoundingClientRect();
+      
+      // Calculate position relative to the wrapper
+      const top = event.clientY - pane.top;
+      const left = event.clientX - pane.left;
+
+      setMenu({
+        id: node.id,
+        top: top < pane.height - 100 ? top : undefined,
+        bottom: top >= pane.height - 100 ? pane.height - top : undefined,
+        left: left < pane.width - 150 ? left : undefined,
+        right: left >= pane.width - 150 ? pane.width - left : undefined,
+      });
+    },
+    [setMenu]
+  );
+
+  const onPaneClick = useCallback(() => setMenu(null), [setMenu]);
 
   return (
     <>
@@ -282,6 +310,9 @@ export const PipelineUI = () => {
             onConnect={onConnect}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            onNodeContextMenu={onNodeContextMenu}
+            onPaneClick={onPaneClick}
+            onNodesDelete={onPaneClick}
             onInit={setReactFlowInstance}
             nodeTypes={nodeTypes}
             proOptions={proOptions}
@@ -300,6 +331,28 @@ export const PipelineUI = () => {
               zoomable
             />
           </ReactFlow>
+
+          {/* Context Menu */}
+          {menu && (
+            <div
+              style={{ top: menu.top, left: menu.left, right: menu.right, bottom: menu.bottom }}
+              className="absolute z-50 flex flex-col bg-gray-900/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.8),0_0_20px_rgba(139,92,246,0.15)] overflow-hidden min-w-[140px] animate-in fade-in zoom-in-95 duration-200"
+            >
+              <button
+                className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors text-left"
+                onClick={() => { duplicateNode(menu.id); setMenu(null); }}
+              >
+                <span className="text-purple-400 text-sm">⎘</span> Duplicate
+              </button>
+              <div className="h-px w-full bg-white/5"></div>
+              <button
+                className="flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors text-left"
+                onClick={() => { deleteNode(menu.id); setMenu(null); }}
+              >
+                <span className="text-red-500 text-sm">🗑</span> Delete
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>

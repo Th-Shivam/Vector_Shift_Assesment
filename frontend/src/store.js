@@ -25,6 +25,32 @@ export const useStore = create((set, get) => ({
             nodes: [...get().nodes, node]
         });
     },
+    deleteNode: (nodeId) => {
+        set({
+            nodes: get().nodes.filter((node) => node.id !== nodeId),
+            edges: get().edges.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
+        });
+    },
+    duplicateNode: (nodeId) => {
+        const nodeToDuplicate = get().nodes.find((node) => node.id === nodeId);
+        if (nodeToDuplicate) {
+            const newId = get().getNodeID(nodeToDuplicate.type);
+            const newNode = {
+                ...nodeToDuplicate,
+                id: newId,
+                position: {
+                    x: nodeToDuplicate.position.x + 50,
+                    y: nodeToDuplicate.position.y + 50
+                },
+                data: {
+                    ...nodeToDuplicate.data,
+                    id: newId
+                },
+                selected: false
+            };
+            set({ nodes: [...get().nodes, newNode] });
+        }
+    },
     onNodesChange: (changes) => {
       set({
         nodes: applyNodeChanges(changes, get().nodes),
